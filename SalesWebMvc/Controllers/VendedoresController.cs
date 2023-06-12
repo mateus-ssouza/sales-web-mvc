@@ -2,6 +2,7 @@
 using SalesWebMvc.Models;
 using SalesWebMvc.Models.ViewModels;
 using SalesWebMvc.Services;
+using SalesWebMvc.Services.Exceptions;
 using System.Collections.Generic;
 
 namespace SalesWebMvc.Controllers
@@ -79,6 +80,48 @@ namespace SalesWebMvc.Controllers
             if (obj == null) return NotFound();
 
             return View(obj);
+        }
+
+        public IActionResult Edit(int? id)
+        {
+            if(id == null)
+            {
+                return NotFound();
+            }
+
+            var obj = _vendedorService.FindById(id.Value);
+
+            if (obj == null) return NotFound();
+
+            List<Departamento> departamentos = _departamentoService.FindAll();
+            VendedorFormViewModel viewMdoel = new VendedorFormViewModel
+            {
+                Vendedor = obj,
+                Departamentos = departamentos
+            };
+
+            return View(viewMdoel);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Edit(int id, Vendedor vendedor)
+        {
+            if(id != vendedor.Id) return BadRequest();
+
+            try
+            {
+                _vendedorService.Update(vendedor);
+                return RedirectToAction(nameof(Index));
+            } 
+            catch(NotFoundException)
+            {
+                return NotFound();
+            }
+            catch (DbConcurrencyException)
+            {
+                return BadRequest();
+            }     
         }
     }
 }

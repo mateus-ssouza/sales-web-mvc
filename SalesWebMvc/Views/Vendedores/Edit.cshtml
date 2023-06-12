@@ -1,7 +1,7 @@
 ﻿@model SalesWebMvc.Models.ViewModels.VendedorFormViewModel
 
 @{
-    ViewData["Title"] = "Cadastro";
+    ViewData["Title"] = "Edição";
 }
 
 <h2>@ViewData["Title"]</h2>
@@ -12,7 +12,8 @@
 
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Create">
+        <form asp-action="Edit">
+            <input type="hidden" asp-for="Vendedor.Id" />
             <div class="form-group">
                 <label asp-for="Vendedor.Nome" class="control-label"></label>
                 <input asp-for="Vendedor.Nome" class="form-control" />
@@ -35,14 +36,14 @@
 
             <div class="form-group">
                 <label asp-for="Vendedor.DepartamentoId" class="control-label"></label>
-                <select asp-for="Vendedor.DepartamentoId" asp-items="@(new SelectList(Model.Departamentos, "Id", 
+                <select asp-for="Vendedor.DepartamentoId" asp-items="@(new SelectList(Model.Departamentos, "Id",
                 "Nome"))" class="form-control form-select"></select>
             </div>
 
             <div>
                 <input type="submit" value="Salvar" class="btn btn-primary" />
+                <a asp-action="Index" class="btn btn-secondary">Voltar</a>
             </div>
-
         </form>
     </div>
 </div>

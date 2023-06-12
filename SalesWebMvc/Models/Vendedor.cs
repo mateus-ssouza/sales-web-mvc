@@ -6,8 +6,9 @@
         public string Nome { get; set; }
         public string Email { get; set; }
         public DateTime DataDeNascimento { get; set; }
-        public double SalarioBase { get; set; }  
+        public double SalarioBase { get; set; }
 
+        public int DepartamentoId { get; set; }
         public Departamento Departamento { get; set; }
 
         public ICollection<RegistroVendas> Vendas { get; set; } = new List<RegistroVendas>();

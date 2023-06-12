@@ -1,26 +1,163 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
+using SalesWebMvc.Data;
 using SalesWebMvc.Models;
 
 namespace SalesWebMvc.Controllers
 {
     public class DepartamentosController : Controller
     {
-        public IActionResult Index()
-        {
-            List<Departamento> list = new List<Departamento>();
-            list.Add(new Departamento
-            {
-                Id = 1,
-                Nome = "Eletronics"
-            });
-            
-            list.Add(new Departamento
-            {
-                Id = 1,
-                Nome = "Fashion"
-            });
+        private readonly Contexto _contexto;
 
-            return View(list);
+        public DepartamentosController(Contexto contexto)
+        {
+            _contexto = contexto;
+        }
+
+        // GET: Departamentos
+        public async Task<IActionResult> Index()
+        {
+              return _contexto.Departamento != null ? 
+                          View(await _contexto.Departamento.ToListAsync()) :
+                          Problem("Entity set 'Contexto.Departamento'  is null.");
+        }
+
+        // GET: Departamentos/Details/5
+        public async Task<IActionResult> Details(int? id)
+        {
+            if (id == null || _contexto.Departamento == null)
+            {
+                return NotFound();
+            }
+
+            var departamento = await _contexto.Departamento
+                .FirstOrDefaultAsync(m => m.Id == id);
+            if (departamento == null)
+            {
+                return NotFound();
+            }
+
+            return View(departamento);
+        }
+
+        // GET: Departamentos/Create
+        public IActionResult Create()
+        {
+            return View();
+        }
+
+        // POST: Departamentos/Create
+        // To protect from overposting attacks, enable the specific properties you want to bind to.
+        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Create([Bind("Id,Nome")] Departamento departamento)
+        {
+            if (ModelState.IsValid)
+            {
+                _contexto.Add(departamento);
+                await _contexto.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
+            }
+            return View(departamento);
+        }
+
+        // GET: Departamentos/Edit/5
+        public async Task<IActionResult> Edit(int? id)
+        {
+            if (id == null || _contexto.Departamento == null)
+            {
+                return NotFound();
+            }
+
+            var departamento = await _contexto.Departamento.FindAsync(id);
+            if (departamento == null)
+            {
+                return NotFound();
+            }
+            return View(departamento);
+        }
+
+        // POST: Departamentos/Edit/5
+        // To protect from overposting attacks, enable the specific properties you want to bind to.
+        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Nome")] Departamento departamento)
+        {
+            if (id != departamento.Id)
+            {
+                return NotFound();
+            }
+
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    _contexto.Update(departamento);
+                    await _contexto.SaveChangesAsync();
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!DepartamentoExists(departamento.Id))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+                return RedirectToAction(nameof(Index));
+            }
+            return View(departamento);
+        }
+
+        // GET: Departamentos/Delete/5
+        public async Task<IActionResult> Delete(int? id)
+        {
+            if (id == null || _contexto.Departamento == null)
+            {
+                return NotFound();
+            }
+
+            var departamento = await _contexto.Departamento
+                .FirstOrDefaultAsync(m => m.Id == id);
+            if (departamento == null)
+            {
+                return NotFound();
+            }
+
+            return View(departamento);
+        }
+
+        // POST: Departamentos/Delete/5
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteConfirmed(int id)
+        {
+            if (_contexto.Departamento == null)
+            {
+                return Problem("Entity set 'Contexto.Departamento'  is null.");
+            }
+            var departamento = await _contexto.Departamento.FindAsync(id);
+            if (departamento != null)
+            {
+                _contexto.Departamento.Remove(departamento);
+            }
+            
+            await _contexto.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
+        }
+
+        private bool DepartamentoExists(int id)
+        {
+          return (_contexto.Departamento?.Any(e => e.Id == id)).GetValueOrDefault();
         }
     }
 }

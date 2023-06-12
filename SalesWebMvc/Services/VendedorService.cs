@@ -1,5 +1,6 @@
 ﻿using SalesWebMvc.Data;
 using SalesWebMvc.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace SalesWebMvc.Services
 {
@@ -25,7 +26,9 @@ namespace SalesWebMvc.Services
 
         public Vendedor FindById(int id)
         {
-            return _contexto.Vendedores.FirstOrDefault(obj => obj.Id == id);
+            return _contexto.Vendedores
+                .Include(obj => obj.Departamento)
+                .FirstOrDefault(obj => obj.Id == id);
         }
 
         public void Remove(int id)

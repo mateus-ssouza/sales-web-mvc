@@ -1,11 +1,29 @@
-﻿namespace SalesWebMvc.Models
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace SalesWebMvc.Models
 {
     public class Vendedor
     {
         public int Id { get; set; }
+
+        [Required(ErrorMessage = "{0} requerido")]
+        [StringLength(60, MinimumLength = 3, ErrorMessage = "{0} deve ter entre {2} e {1} caracteres")]
         public string Nome { get; set; }
+
+        [Required(ErrorMessage = "{0} requerido")]
+        [EmailAddress(ErrorMessage = "Entre com um email válido")]
+        [DataType(DataType.EmailAddress)]
         public string Email { get; set; }
+
+        [Required(ErrorMessage = "{0} requerido")]
+        [Display(Name = "Data De Nascimento")]
+        [DataType(DataType.Date)]
         public DateTime DataDeNascimento { get; set; }
+
+        [Required(ErrorMessage = "{0} requerido")]
+        [Range(100.0, 50000.0, ErrorMessage = "{0} adicione valores entre {1} e {2}")]
+        [Display(Name = "Salario Base")]
+        [DisplayFormat(DataFormatString = "{0:F2}")]
         public double SalarioBase { get; set; }
 
         public int DepartamentoId { get; set; }

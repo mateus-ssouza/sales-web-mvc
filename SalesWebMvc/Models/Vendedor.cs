@@ -26,6 +26,8 @@ namespace SalesWebMvc.Models
         [DisplayFormat(DataFormatString = "{0:F2}")]
         public double SalarioBase { get; set; }
 
+        [Required(ErrorMessage = "{0} requerido")]
+        [Display(Name = "Departamento")]
         public int DepartamentoId { get; set; }
         public Departamento Departamento { get; set; }
 

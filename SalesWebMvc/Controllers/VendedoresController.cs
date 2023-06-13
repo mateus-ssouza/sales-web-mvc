@@ -18,16 +18,16 @@ namespace SalesWebMvc.Controllers
             _departamentoService = departamentoService;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            var list = _vendedorService.FindAll();
+            var list = await _vendedorService.FindAllAsync();
 
             return View(list);
         }
 
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {  
-            var departamentos = _departamentoService.FindAll();
+            var departamentos = await _departamentoService.FindAllAsync();
             var viewModel = new VendedorFormViewModel 
             { 
                 Departamentos = departamentos
@@ -38,72 +38,82 @@ namespace SalesWebMvc.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Create(Vendedor vendedor)
+        public async Task<IActionResult> Create(Vendedor vendedor)
         {
-            if(!ModelState.IsValid)
+            // TODO: Verificar porque não ta funcionando corretamente
+            /*if (!ModelState.IsValid)
             {
-                var departamentos = _departamentoService.FindAll();
+                var departamentos = await _departamentoService.FindAllAsync();
                 var viewModel = new VendedorFormViewModel
                 {
+                    Vendedor = vendedor,
                     Departamentos = departamentos
                 };
 
                 return View(viewModel);
-            }
+            }*/
 
-            _vendedorService.Insert(vendedor);
+            await _vendedorService.InsertAsync(vendedor);
 
             return RedirectToAction(nameof(Index));
         }
 
-        public IActionResult Delete(int? id)
+        public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
             {
-                return RedirectToAction(nameof(Error), new { message = "Id não reconhecido"});
+                return RedirectToAction(nameof(Error), 
+                    new { message = "Id não reconhecido"});
             }
 
-            var obj = _vendedorService.FindById(id.Value);
+            var obj = await _vendedorService.FindByIdAsync(id.Value);
             
-            if (obj == null) return RedirectToAction(nameof(Error), new { message = "Id não encontrado" });
+            if (obj == null) return RedirectToAction(nameof(Error), 
+                new { message = "Id não encontrado" });
 
             return View(obj);   
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Delete(int id)
+        public async Task<IActionResult> Delete(int id)
         {
-            _vendedorService.Remove(id);
+            await _vendedorService.RemoveAsync(id);
             return RedirectToAction(nameof(Index));
         }
 
-        public IActionResult Details(int? id)
+        public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
             {
-                return RedirectToAction(nameof(Error), new { message = "Id não reconhecido" });
+                return RedirectToAction(nameof(Error), 
+                    new { message = "Id não reconhecido" });
             }
 
-            var obj = _vendedorService.FindById(id.Value);
+            var obj = await _vendedorService.FindByIdAsync(id.Value);
 
-            if (obj == null) return RedirectToAction(nameof(Error), new { message = "Id não encontrado" });
+            if (obj == null) return RedirectToAction(nameof(Error), 
+                new { message = "Id não encontrado" });
 
             return View(obj);
         }
 
-        public IActionResult Edit(int? id)
+        public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
             {
-                return RedirectToAction(nameof(Error), new { message = "Id não reconhecido" });
+                return RedirectToAction(nameof(Error), 
+                    new { message = "Id não reconhecido" });
             }
 
-            var obj = _vendedorService.FindById(id.Value);
+            var obj = await _vendedorService.FindByIdAsync(id.Value);
 
-            if (obj == null) return RedirectToAction(nameof(Error), new { message = "Id não encontrado" });
+            if (obj == null) return RedirectToAction(nameof(Error), 
+                new { message = "Id não encontrado" });
 
-            List<Departamento> departamentos = _departamentoService.FindAll();
+            List<Departamento> departamentos = 
+                await _departamentoService.FindAllAsync();
+
             VendedorFormViewModel viewMdoel = new VendedorFormViewModel
             {
                 Vendedor = obj,
@@ -115,30 +125,33 @@ namespace SalesWebMvc.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit(int id, Vendedor vendedor)
+        public async Task<IActionResult> Edit(int id, Vendedor vendedor)
         {
-            if (!ModelState.IsValid)
+            // TODO: Verificar porque não ta funcionando corretamente
+            /*if (!ModelState.IsValid)
             {
-                var departamentos = _departamentoService.FindAll();
+                var departamentos = await _departamentoService.FindAllAsync();
                 var viewModel = new VendedorFormViewModel
                 {
+                    Vendedor = vendedor,
                     Departamentos = departamentos
                 };
 
                 return View(viewModel);
-            }
+            }*/
 
             if (id != vendedor.Id) return RedirectToAction(nameof(Error), 
                 new { message = "Id não correspondem" }); ;
 
             try
             {
-                _vendedorService.Update(vendedor);
+                await _vendedorService.UpdateAsync(vendedor);
                 return RedirectToAction(nameof(Index));
             }
             catch(ApplicationException e)
             {
-                return RedirectToAction(nameof(Error), new { message = e.Message });
+                return RedirectToAction(nameof(Error), 
+                    new { message = e.Message });
             }   
         }
 

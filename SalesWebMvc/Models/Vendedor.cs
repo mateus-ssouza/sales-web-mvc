@@ -29,7 +29,7 @@ namespace SalesWebMvc.Models
         [Required(ErrorMessage = "{0} requerido")]
         [Display(Name = "Departamento")]
         public int DepartamentoId { get; set; }
-        public Departamento Departamento { get; set; }
+        public Departamento? Departamento { get; set; }
 
         public ICollection<RegistroVendas> Vendas { get; set; } = new List<RegistroVendas>();
 

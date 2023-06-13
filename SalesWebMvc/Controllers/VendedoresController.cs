@@ -40,8 +40,7 @@ namespace SalesWebMvc.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(Vendedor vendedor)
         {
-            // TODO: Verificar porque não ta funcionando corretamente
-            /*if (!ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
                 var departamentos = await _departamentoService.FindAllAsync();
                 var viewModel = new VendedorFormViewModel
@@ -51,7 +50,7 @@ namespace SalesWebMvc.Controllers
                 };
 
                 return View(viewModel);
-            }*/
+            }
 
             await _vendedorService.InsertAsync(vendedor);
 
@@ -127,8 +126,7 @@ namespace SalesWebMvc.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, Vendedor vendedor)
         {
-            // TODO: Verificar porque não ta funcionando corretamente
-            /*if (!ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
                 var departamentos = await _departamentoService.FindAllAsync();
                 var viewModel = new VendedorFormViewModel
@@ -138,7 +136,7 @@ namespace SalesWebMvc.Controllers
                 };
 
                 return View(viewModel);
-            }*/
+            }
 
             if (id != vendedor.Id) return RedirectToAction(nameof(Error), 
                 new { message = "Id não correspondem" }); ;

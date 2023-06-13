@@ -16,8 +16,6 @@ namespace SalesWebMvc
                 options.UseSqlServer(builder.Configuration.GetConnectionString("Contexto") ?? throw new InvalidOperationException("Connection string 'Contexto' not found.")));
 
 
-            builder.Services.AddScoped<SeedingService>();
-
             builder.Services.AddScoped<VendedorService>();
             builder.Services.AddScoped<DepartamentoService>();
 

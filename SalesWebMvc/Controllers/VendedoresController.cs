@@ -2,8 +2,7 @@
 using SalesWebMvc.Models;
 using SalesWebMvc.Models.ViewModels;
 using SalesWebMvc.Services;
-using SalesWebMvc.Services.Exceptions;
-using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace SalesWebMvc.Controllers
 {
@@ -50,12 +49,12 @@ namespace SalesWebMvc.Controllers
         {
             if (id == null)
             {
-                return NotFound();
+                return RedirectToAction(nameof(Error), new { message = "Id não reconhecido"});
             }
 
             var obj = _vendedorService.FindById(id.Value);
             
-            if (obj == null) return NotFound();
+            if (obj == null) return RedirectToAction(nameof(Error), new { message = "Id não encontrado" });
 
             return View(obj);   
         }
@@ -72,26 +71,26 @@ namespace SalesWebMvc.Controllers
         {
             if (id == null)
             {
-                return NotFound();
+                return RedirectToAction(nameof(Error), new { message = "Id não reconhecido" });
             }
 
             var obj = _vendedorService.FindById(id.Value);
 
-            if (obj == null) return NotFound();
+            if (obj == null) return RedirectToAction(nameof(Error), new { message = "Id não encontrado" });
 
             return View(obj);
         }
 
         public IActionResult Edit(int? id)
         {
-            if(id == null)
+            if (id == null)
             {
-                return NotFound();
+                return RedirectToAction(nameof(Error), new { message = "Id não reconhecido" });
             }
 
             var obj = _vendedorService.FindById(id.Value);
 
-            if (obj == null) return NotFound();
+            if (obj == null) return RedirectToAction(nameof(Error), new { message = "Id não encontrado" });
 
             List<Departamento> departamentos = _departamentoService.FindAll();
             VendedorFormViewModel viewMdoel = new VendedorFormViewModel
@@ -107,21 +106,28 @@ namespace SalesWebMvc.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Edit(int id, Vendedor vendedor)
         {
-            if(id != vendedor.Id) return BadRequest();
+            if(id != vendedor.Id) return RedirectToAction(nameof(Error), new { message = "Id não correspondem" }); ;
 
             try
             {
                 _vendedorService.Update(vendedor);
                 return RedirectToAction(nameof(Index));
-            } 
-            catch(NotFoundException)
-            {
-                return NotFound();
             }
-            catch (DbConcurrencyException)
+            catch(ApplicationException e)
             {
-                return BadRequest();
-            }     
+                return RedirectToAction(nameof(Error), new { message = e.Message });
+            }   
+        }
+
+        public IActionResult Error(string message)
+        {
+            var viewModel = new ErrorViewModel
+            {
+                Message = message,
+                RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier
+            };
+
+            return View(viewModel);
         }
     }
 }

@@ -18,6 +18,7 @@ namespace SalesWebMvc
 
             builder.Services.AddScoped<VendedorService>();
             builder.Services.AddScoped<DepartamentoService>();
+            builder.Services.AddScoped<RegistroVendasService>();
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();

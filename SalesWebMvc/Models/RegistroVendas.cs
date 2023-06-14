@@ -1,10 +1,13 @@
 ﻿using SalesWebMvc.Models.Enums;
+using System.ComponentModel.DataAnnotations;
 
 namespace SalesWebMvc.Models
 {
     public class RegistroVendas
     {
         public int Id { get; set; }
+
+        [DataType(DataType.Date)]
         public DateTime Data { get; set; }
         public double Valor { get; set; }
         public StatusVenda Status { get; set; }

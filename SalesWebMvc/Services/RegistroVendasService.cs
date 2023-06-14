@@ -13,19 +13,19 @@ namespace SalesWebMvc.Services
             _contexto = contexto;
         }
 
-        public async Task<List<RegistroVendas>> FindByDateAsync(DateTime? minData, 
-            DateTime? maxData)
+        public async Task<List<RegistroVendas>> FindByDateAsync(DateTime? minDate, 
+            DateTime? maxDate)
         {
             var result = from obj in _contexto.RegistroVendas select obj;
 
-            if (minData.HasValue)
+            if (minDate.HasValue)
             {
-                result = result.Where(x => x.Data >= minData.Value);
+                result = result.Where(x => x.Data >= minDate.Value);
             }
 
-            if (maxData.HasValue)
+            if (maxDate.HasValue)
             {
-                result = result.Where(x => x.Data <= maxData.Value);
+                result = result.Where(x => x.Data <= maxDate.Value);
             }
 
             return await result
@@ -34,5 +34,6 @@ namespace SalesWebMvc.Services
                 .OrderByDescending(x => x.Data)
                 .ToListAsync();
         }
+
     }
 }
